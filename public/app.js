@@ -98,7 +98,7 @@ function setupEventListeners() {
 function setupSocketListeners() {
     socket.on('waiting', ({ role }) => {
         currentState.role = role;
-        document.getElementById('waiting-role').textContent = `Joining as ${role}`;
+        document.getElementById('waiting-role').textContent = `INITIALIZING_SESSION_AS_${role.toUpperCase()}`;
 
         // Show cat message if cat role
         if (role === 'cat') {
@@ -284,13 +284,13 @@ function showResult(partnerType, correct) {
 
     // Display result
     if (correct) {
-        icon.textContent = '✅';
-        title.textContent = 'Correct!';
-        message.textContent = `You guessed right! It was ${getPartnerName(partnerType)}.`;
+        icon.textContent = '[ SUCCESS ]';
+        title.textContent = 'IDENTITY_MATCHED';
+        message.textContent = `ANALYSIS_RESULT: Partner was identified as ${getPartnerName(partnerType).toUpperCase()}.`;
     } else {
-        icon.textContent = '❌';
-        title.textContent = 'Wrong!';
-        message.textContent = `It was actually ${getPartnerName(partnerType)}!`;
+        icon.textContent = '[ FAILURE ]';
+        title.textContent = 'MISIDENTIFICATION_ERROR';
+        message.textContent = `ANALYSIS_RESULT: Actual identity was ${getPartnerName(partnerType).toUpperCase()}.`;
     }
 
     showScreen('result');
@@ -301,11 +301,11 @@ function showResult(partnerType, correct) {
  */
 function getPartnerName(type) {
     const names = {
-        human: 'a human',
-        cat: 'a cat',
-        ai: 'an AI'
+        human: 'human_entity',
+        cat: 'cat_entity_simulator',
+        ai: 'artificial_intelligence'
     };
-    return names[type] || 'unknown';
+    return names[type] || 'unknown_target';
 }
 
 /**
