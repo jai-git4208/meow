@@ -8,7 +8,14 @@ by being a cat means picking cat and let your cat type over your keyboard :3
 
 I've used node.js to host this game, express.js for the server, socket.io for real-time communication, and html, css, and js for the client side interface.
 
-This was made for the YSWS program, (meow)[https://meow.hackclub.com/]
+This was made for the YSWS program, [meow](https://meow.hackclub.com/)
+
+To run this, change .env.example to .env and include you api key in it.
+and run
+```
+npm install
+npm start
+```
 
 
 All contributions are welcome!
