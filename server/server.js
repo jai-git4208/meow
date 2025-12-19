@@ -1,6 +1,6 @@
 /**
- * Meow · Human · AI - Main Server
- * Express + Socket.io server for anonymous chat game
+ * meow · human · ai - main server
+ * express + socket.io server for anonymous chat game
  */
 
 require('dotenv').config();
@@ -13,46 +13,46 @@ const cors = require('cors');
 const matchmaking = require('./matchmaking');
 const chatRoom = require('./chatRoom');
 
-// Initialize Express app
+// initialize Express app
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "*", // Allow all origins for demo
+        origin: "*", // aallow all origins for demo
         methods: ["GET", "POST"]
     }
 });
 
-// Middleware
+// middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Serve index.html for all routes
+// serve index.html for all routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Socket.io connection handling
+// socket.io connection handling
 io.on('connection', (socket) => {
     console.log(`Client connected: ${socket.id}`);
 
     /**
-     * Handle user joining queue
+     * handle user joining queue
      */
     socket.on('join_queue', ({ role }) => {
         console.log(`${socket.id} wants to join as ${role}`);
 
-        // Assign role
+        // assign role
         const assignedRole = matchmaking.assignRole(role);
 
-        // Add to queue
+        // addd to queue
         matchmaking.addToQueue(socket, assignedRole);
 
-        // Notify client they're waiting
+        // notify client they're waiting
         socket.emit('waiting', { role: assignedRole });
 
-        // Try to find a match immediately
+        // try to find a match immediately
         const user = {
             socketId: socket.id,
             socket: socket,
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
         if (matchResult) {
             createChatSession(matchResult);
         } else {
-            // Set timeout to create AI fallback if no match after 3 seconds
+            // set timeout to create AI fallback if no match after 30 seconds
             setTimeout(() => {
                 const userStillWaiting = matchmaking.getUser(socket.id);
                 if (userStillWaiting && userStillWaiting.inQueue) {
@@ -74,12 +74,12 @@ io.on('connection', (socket) => {
                         createChatSession(retryMatch);
                     }
                 }
-            }, 3000);
+            }, 30000);
         }
     });
 
     /**
-     * Handle chat message
+     * handle chat message
      */
     socket.on('send_message', async ({ message }) => {
         const room = chatRoom.getChatRoomBySocketId(socket.id);
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
     });
 
     /**
-     * Handle typing indicator
+     * handle typing indicator
      */
     socket.on('typing', ({ isTyping }) => {
         const room = chatRoom.getChatRoomBySocketId(socket.id);
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
     });
 
     /**
-     * Handle end chat request
+     * handle end chat request
      */
     socket.on('end_chat', () => {
         const room = chatRoom.getChatRoomBySocketId(socket.id);
@@ -112,14 +112,14 @@ io.on('connection', (socket) => {
     });
 
     /**
-     * Handle guess submission
+     * handle guess submission
      */
     socket.on('submit_guess', ({ guess }) => {
         console.log(`[GUESS] ${socket.id} guessed: ${guess}`);
         const room = chatRoom.getChatRoomBySocketId(socket.id);
 
         if (room) {
-            // Find partner
+            // find partner
             const participant = room.participants.find(p => p.socketId === socket.id);
             const partner = room.participants.find(p => p.socketId !== socket.id);
 
@@ -132,7 +132,7 @@ io.on('connection', (socket) => {
                 });
             }
         } else {
-            // If room is deleted, check user's stored partner type
+            // if room is deleted, check user's stored partner type
             const user = matchmaking.getUser(socket.id);
 
             if (user && user.partnerType) {
@@ -143,7 +143,7 @@ io.on('connection', (socket) => {
                     correct: correct
                 });
 
-                // Clear partner type after revealing
+                // clear partner type after revealing
                 user.partnerType = null;
             }
         }
@@ -155,34 +155,34 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`Client disconnected: ${socket.id}`);
 
-        // Remove from queue if waiting
+        // remove from queue if waiting
         matchmaking.removeFromQueue(socket.id);
 
-        // End chat if in a room
+        // end chat if in a room
         chatRoom.handleDisconnect(socket.id);
     });
 });
 
 /**
- * Create a chat session from match result
+ * create a chat session from match result
  * @param {Object} matchResult - Match result with participants and chatId
  */
 function createChatSession(matchResult) {
     const { participants, chatId } = matchResult;
 
-    // Create chat room
+    // create chat room
     const room = chatRoom.createChatRoom(chatId, participants);
 
-    // Update user statuses
+    // update user statuses
     participants.forEach(p => {
         if (!p.isAI) {
             matchmaking.updateUserChat(p.socketId, chatId);
             p.socket.emit('matched', { chatId });
         } else {
-            // For AI participant, add socket reference to emit messages
+            // for AI participant, add socket reference to emit messages
             const humanParticipant = participants.find(p => !p.isAI);
             if (humanParticipant) {
-                p.socket = humanParticipant.socket; // AI uses human's socket to send messages
+                p.socket = humanParticipant.socket; // aI uses human's socket to send messages
             }
         }
     });
@@ -191,6 +191,6 @@ function createChatSession(matchResult) {
 // Start server
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
-    console.log(`Meow · Human · AI server running on http://localhost:${PORT}`);
+    console.log(`meow human or ai server running on http://localhost:${PORT} :3`);
     console.log(`Press Ctrl+C to stop`);
 });
