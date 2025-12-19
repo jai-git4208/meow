@@ -1,19 +1,19 @@
 /**
- * Matchmaking System
- * Handles queue management and participant pairing
+ * matchmaking System
+ * handles queue management and participant pairing
  */
 
 const { randomUUID } = require('crypto');
 const { getRandomPersonality } = require('./aiParticipant');
 
-// Waiting queue
+// waiting queue
 const waitingQueue = [];
 
-// User tracking
+// user tracking
 const users = new Map();
 
 /**
- * Assign role based on user selection
+ * aassign role based on user selection
  * @param {string} selection - 'human', 'cat', or 'random'
  * @returns {string} - Assigned role
  */
@@ -26,7 +26,7 @@ function assignRole(selection) {
 }
 
 /**
- * Add user to waiting queue
+ * addd user to waiting room
  * @param {Object} socket - Socket.io socket
  * @param {string} role - User's role
  */
@@ -45,25 +45,25 @@ function addToQueue(socket, role) {
 }
 
 /**
- * Find a match for a user
- * @param {Object} user - User looking for match
- * @returns {Object|null} - Matched user or null
+ * find a match for the user
+ * @param {Object} user - user for match
+ * @returns {Object|null} - already matched usr
  */
 function findMatch(user) {
-    // Matching rules:
-    // - Human can match with Human, Cat, or AI
-    // - Cat can only match with Human
-    // - AI can only match with Human
+    // matching rules
+    // - Human can match with human, cat, or ai
+    // - cat can only match with Human
+    // - ai can only match with human
 
     for (let i = 0; i < waitingQueue.length; i++) {
         const candidate = waitingQueue[i];
 
-        // Skip self
+        // skip self
         if (candidate.socketId === user.socketId) {
             continue;
         }
 
-        // Check if valid match
+        // check if its a valid amtch
         const isValidMatch = (
             (user.role === 'human') || // Human matches with anyone
             (user.role === 'cat' && candidate.role === 'human') ||
@@ -71,7 +71,7 @@ function findMatch(user) {
         );
 
         if (isValidMatch) {
-            // Remove from queue
+            // remove from que
             waitingQueue.splice(i, 1);
             return candidate;
         }
@@ -81,7 +81,7 @@ function findMatch(user) {
 }
 
 /**
- * Create AI participant as fallback
+ * create ai participants as fallback
  * @returns {Object} - AI participant object
  */
 function createAIParticipant() {
@@ -89,7 +89,7 @@ function createAIParticipant() {
 
     return {
         socketId: 'ai-' + randomUUID(),
-        socket: null, // AI doesn't have a real socket
+        socket: null, // no readl socket for ai
         role: 'ai',
         aiPersonality: aiPersonality,
         isAI: true
