@@ -1,14 +1,14 @@
 /**
- * AI Participant Module
- * Handles AI chat responses using Google Gemini API
+ * ai Participant Module
+ * handles AI chat responses using Google Gemini API
  */
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Initialize Gemini client
+// initialize Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// AI personality system prompts
+// ai personality system prompts
 const PERSONALITIES = {
     cat: `You are a cat walking on a keyboard in an anonymous chat. 
 Your responses should be chaotic and cat-like:
@@ -40,33 +40,33 @@ Stay casual, authentic, and human-like.`
 const conversationHistories = new Map();
 
 /**
- * Generate AI response based on personality
- * @param {string} chatId - The chat room ID
- * @param {string} personality - 'cat' or 'human'
- * @param {string} userMessage - The message from the user
- * @returns {Promise<string>} - AI generated response
+ * generate ai response based on personality
+ * @param {string} chatId 
+ * @param {string} personality 
+ * @param {string} userMessage 
+ * @returns {Promise<string>} 
  */
 async function generateResponse(chatId, personality, userMessage) {
     try {
-        // Get or create conversation history
+        // get or create conversation history
         if (!conversationHistories.has(chatId)) {
             conversationHistories.set(chatId, []);
         }
 
         const history = conversationHistories.get(chatId);
 
-        // Build conversation context
+        // build conversation context
         let conversationContext = PERSONALITIES[personality] + '\n\n';
         conversationContext += 'Conversation so far:\n';
 
-        // Add recent history
+        // add recent history
         history.forEach(msg => {
             conversationContext += `${msg.role}: ${msg.content}\n`;
         });
 
         conversationContext += `User: ${userMessage}\nYou:`;
 
-        // Get AI response using Gemini
+        // get AI response using Gemini
         const model = genAI.getGenerativeModel({
             model: process.env.GEMINI_MODEL || 'gemini-1.5-flash'
         });
@@ -81,11 +81,11 @@ async function generateResponse(chatId, personality, userMessage) {
 
         const response = result.response.text().trim();
 
-        // Add to history
+        // add to history
         history.push({ role: 'User', content: userMessage });
         history.push({ role: 'You', content: response });
 
-        // Limit history to last 6 messages
+        // limit history to last 6 messages
         if (history.length > 6) {
             conversationHistories.set(chatId, history.slice(-6));
         }
@@ -94,7 +94,7 @@ async function generateResponse(chatId, personality, userMessage) {
     } catch (error) {
         console.error('AI generation error:', error.message);
 
-        // Fallback responses if API fails
+        // gallback responses if API fails
         if (personality === 'cat') {
             const catFallbacks = ['meow', 'mrow?', 'mew mew', 'prrrr', 'meowww', 'hiss'];
             return catFallbacks[Math.floor(Math.random() * catFallbacks.length)];
@@ -106,7 +106,7 @@ async function generateResponse(chatId, personality, userMessage) {
 }
 
 /**
- * Clear conversation history for a chat
+ * cclear conversation history for a chat
  * @param {string} chatId - The chat room ID
  */
 function clearHistory(chatId) {
@@ -114,7 +114,7 @@ function clearHistory(chatId) {
 }
 
 /**
- * Get random personality for AI
+ * get random personality for AI
  * @returns {string} - 'cat' or 'human'
  */
 function getRandomPersonality() {
