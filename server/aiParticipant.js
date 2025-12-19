@@ -68,7 +68,7 @@ async function generateResponse(chatId, personality, userMessage) {
 
         // get AI response using Gemini
         const model = genAI.getGenerativeModel({
-            model: process.env.GEMINI_MODEL || 'gemini-3-flash-preview'
+            model: process.env.GEMINI_MODEL || 'gemini-flash-latest'
         });
 
         const result = await model.generateContent({
@@ -78,8 +78,11 @@ async function generateResponse(chatId, personality, userMessage) {
                 maxOutputTokens: 50,
             },
         });
-
         const response = result.response.text().trim();
+
+        if (!response) {
+            throw new Error('Empty AI response from model');
+        }
 
         // add to history
         history.push({ role: 'User', content: userMessage });
@@ -94,13 +97,20 @@ async function generateResponse(chatId, personality, userMessage) {
     } catch (error) {
         console.error('AI generation error:', error.message);
 
-        // gallback responses if API fails
+        // fallback responses if API fails or returns empty
         if (personality === 'cat') {
-            const catFallbacks = ['meow', 'mrow?', 'mew mew', 'prrrr', 'meowww', 'hiss'];
+            const catFallbacks = ['meow', 'mrow?', 'mew mew', 'prrrr', 'meowww', 'hiss', '...meow'];
             return catFallbacks[Math.floor(Math.random() * catFallbacks.length)];
         } else {
-            const humanFallbacks = ['hey!', 'lol', 'yeah', 'interesting', 'cool', 'haha'];
-            return humanFallbacks[Math.floor(Math.random() * humanFallbacks.length)];
+            const humanFollowUps = [
+                'interesting...',
+                'tell me more!',
+                'lol true',
+                'yeah, i get that',
+                'cool cool',
+                'haha nice'
+            ];
+            return humanFollowUps[Math.floor(Math.random() * humanFollowUps.length)];
         }
     }
 }

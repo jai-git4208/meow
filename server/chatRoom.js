@@ -25,9 +25,7 @@ function createChatRoom(chatId, participants) {
     const chatRoom = {
         id: chatId,
         participants: participants.map(p => ({
-            socketId: p.socketId,
-            role: p.role,
-            socket: p.socket,
+            ...p,
             messageCount: 0
         })),
         totalMessages: 0,
@@ -94,10 +92,14 @@ async function handleMessage(chatId, senderSocketId, message, io) {
                     const aiResponse = await generateResponse(chatId, aiPersonality, filteredMessage);
 
                     // Send AI response back to human
-                    sender.socket.emit('receive_message', {
-                        message: aiResponse,
-                        timestamp: Date.now()
-                    });
+                    if (aiResponse && aiResponse.trim()) {
+                        sender.socket.emit('receive_message', {
+                            message: aiResponse,
+                            timestamp: Date.now()
+                        });
+                    } else {
+                        console.warn(`[WARN] Empty AI response for room ${chatId}, skipping emit.`);
+                    }
 
                     recipient.messageCount++;
                     chatRoom.totalMessages++;
