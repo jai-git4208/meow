@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meow · Human · AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- join Screen -->
+    <div id="join-screen" class="screen active">
+      <div class="terminal-header">
+        <span>JOIN SESSION</span>
+        <span> v1.0.4</span>
+      </div>
+      <div class="logo">
+        <h1>Meow · Human · AI</h1>
+        <p class="tagline">Can you guess who you're chatting with?</p>
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-primary" data-role="human">
+          Chat as Human
+        </button>
+        <button class="btn btn-secondary" data-role="cat">
+          Let My Cat Chat
+        </button>
+        <button class="btn btn-tertiary" data-role="random">
+          Random
+        </button>
+      </div>
+
+      <div id="cat-message" class="info-message hidden">
+        <p>> ROLE: CAT</p>
+        <p>> INSTRUCTIONS: Meow, type chaos, or let your cat walk on the keyboard.</p>
+      </div>
+
+      <div class="stats-display">
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-label">Games</div>
+            <div class="stat-value" id="stat-games">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Correct</div>
+            <div class="stat-value" id="stat-correct">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-value" id="stat-accuracy">0%</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Fooled</div>
+            <div class="stat-value" id="stat-fooled">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- waiting Screen -->
+    <div id="waiting-screen" class="screen">
+      <div class="terminal-header">
+        <span>MATCHMAKING</span>
+        <span>SEARCHING...</span>
+      </div>
+      <div class="waiting-content">
+        <div class="spinner"></div>
+        <h2>Finding your chat partner...</h2>
+        <p id="waiting-role">Joining as human</p>
+      </div>
+    </div>
+
+    <!-- chat Screen -->
+    <div id="chat-screen" class="screen">
+      <div class="terminal-header">
+        <span>CONNECTION ACTIVE</span>
+        <span id="time-remaining">2:00</span>
+      </div>
+      <div class="chat-header">
+        <div class="chat-info">
+          <span>PROXIED_SESSION@ANONYMOUS</span>
+        </div>
+        <div class="chat-controls">
+          <div class="message-counter">
+            <span id="message-count">0/12</span>
+          </div>
+          <button id="skip-btn" class="btn-skip btn">> TERMINATE</button>
+        </div>
+      </div>
+
+      <div id="messages" class="messages"></div>
+
+      <div id="typing-indicator" class="typing-indicator hidden">
+        <span>PARTNER_TYPING...</span>
+      </div>
+
+      <div class="chat-input-container">
+        <input type="text" id="message-input" placeholder="SEND COMMAND..." maxlength="200" autocomplete="off" />
+        <button id="send-btn" class="btn-send">EXECUTE</button>
+      </div>
+    </div>
+
+    <!-- hguess Screen -->
+    <div id="guess-screen" class="screen">
+      <div class="terminal-header">
+        <span>IDENTITY QUERY</span>
+        <span>AWAITING_INPUT</span>
+      </div>
+      <div class="guess-content">
+        <h2>Who were you chatting with?</h2>
+        <p class="guess-subtitle">> MAKE_YOUR_GUESS_NOW</p>
+
+        <div class="buttons">
+          <button class="btn btn-guess" data-guess="cat">
+            A Cat
+          </button>
+          <button class="btn btn-guess" data-guess="human">
+            A Human
+          </button>
+          <button class="btn btn-guess" data-guess="ai">
+            An AI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- result Screen -->
+    <div id="result-screen" class="screen">
+      <div class="terminal-header">
+        <span>SESSION ANALYSIS</span>
+        <span>COMPLETED</span>
+      </div>
+      <div class="result-content">
+        <div id="result-icon" class="result-icon"></div>
+        <h2 id="result-title"></h2>
+        <p id="result-message"></p>
+        <button id="play-again-btn" class="btn btn-primary">> REBOOT SESSION</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

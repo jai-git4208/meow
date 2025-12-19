@@ -1,0 +1,364 @@
+/**
+ * Meow · Human · AI - Hacker Edition
+ * Strict Black & White Terminal Aesthetic
+ */
+
+:root {
+  /* Core B&W Palette */
+  --color-bg: #000000;
+  --color-text: #ffffff;
+  --color-dim: #888888;
+  --color-border: #ffffff;
+
+  /* Terminal Specifics */
+  --font-mono: 'Courier New', Courier, monospace;
+  --terminal-padding: 20px;
+  --scanline-color: rgba(255, 255, 255, 0.03);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-mono);
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* CRT Scanlines and Flicker */
+body::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(var(--scanline-color) 50%,
+      transparent 50%);
+  background-size: 100% 4px;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+
+  5% {
+    opacity: 0.95;
+  }
+
+  10% {
+    opacity: 0.9;
+  }
+
+  15% {
+    opacity: 0.93;
+  }
+
+  25% {
+    opacity: 0.95;
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  height: 90vh;
+  padding: var(--terminal-padding);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  animation: flicker 0.15s infinite;
+}
+
+/* Screen Layouts */
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  position: relative;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* Header / Title Bar Styles */
+.terminal-header {
+  background: var(--color-border);
+  color: var(--color-bg);
+  padding: 5px 10px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Specific Screens */
+#join-screen {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.logo h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--color-border);
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+.tagline {
+  margin-bottom: 40px;
+  color: var(--color-dim);
+}
+
+.buttons {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Buttons Styling */
+.btn {
+  background: transparent;
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.btn:active {
+  transform: translateY(2px);
+}
+
+.info-message {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px dashed var(--color-border);
+  color: var(--color-dim);
+}
+
+.info-message.hidden {
+  display: none;
+}
+
+/* Stats Grid */
+.stats-display {
+  margin-top: 40px;
+  width: 100%;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 20px;
+}
+
+.stat-value {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--color-dim);
+}
+
+/* Chat Screen Layout */
+#chat-screen {
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px;
+  font-size: 0.8rem;
+}
+
+.chat-controls {
+  display: flex;
+  gap: 20px;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Simple Message Bubbles */
+.message {
+  margin-bottom: 5px;
+}
+
+.message-sent {
+  text-align: right;
+}
+
+.message-received {
+  text-align: left;
+}
+
+.message-bubble {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  max-width: 80%;
+}
+
+.message-sent .message-bubble {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.typing-indicator {
+  padding: 5px 15px;
+  font-size: 0.7rem;
+  color: var(--color-dim);
+}
+
+.typing-indicator.hidden {
+  display: none;
+}
+
+/* Chat Input Bar */
+.chat-input-container {
+  display: flex;
+  border-top: 2px solid var(--color-border);
+}
+
+#message-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  padding: 15px;
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.btn-send {
+  background: var(--color-border);
+  color: var(--color-bg);
+  border: none;
+  padding: 0 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Waiting / Guess / Result screens styling... (kept consistent) */
+.waiting-content,
+.guess-content,
+.result-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--color-dim);
+  border-top: 4px solid var(--color-border);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Desktop vs Mobile Differentiator */
+@media (min-width: 768px) {
+  .container {
+    max-width: 900px;
+    padding: 40px;
+  }
+
+  .screen {
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    height: 100vh;
+    padding: 0;
+  }
+
+  .screen {
+    border: none;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .logo h1 {
+    font-size: 1.8rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Result specific icon large display */
+.result-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
