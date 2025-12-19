@@ -68,7 +68,7 @@ async function generateResponse(chatId, personality, userMessage) {
 
         // get AI response using Gemini
         const model = genAI.getGenerativeModel({
-            model: process.env.GEMINI_MODEL || 'gemini-1.5-flash'
+            model: process.env.GEMINI_MODEL || 'gemini-3-flash-preview'
         });
 
         const result = await model.generateContent({
